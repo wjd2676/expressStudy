@@ -1,5 +1,16 @@
 import { Request } from "express";
-import { loginModel, signupModel, updateUserModel } from "./model";
+import {
+  loginModel,
+  signupModel,
+  updateUserModel,
+  userIdValidationModel
+} from "./model";
+import {
+  bcryptCompare,
+  bscryptPassword,
+  jwtDecodeUserId,
+  jwtEncodeUserId
+} from "../../uilts";
 
 export const loginService = async (req: Request) => {
   let result = "invalidValue";
@@ -7,23 +18,23 @@ export const loginService = async (req: Request) => {
 
   const { userId, userPw } = req.body;
 
-  //TODO validation
-  //TODO JWT
-  //TODO MODEL
+  if (userId === undefined || userPw === undefined)
+    return { result: "invalidBody", data: null };
 
-  let validation = false;
-  if (!validation) return { result, data };
+  const validation = await userIdValidationModel(userId);
 
-  const loginHandle = await loginModel(userId, userPw);
+  if (!validation) return { result: "invalidValue", data };
 
-  if (loginHandle) {
-    let jwt = "good";
+  const user = await userIdValidationModel(userId);
+
+  const pwCompareResult = await bcryptCompare(user!.userPw, userPw);
+
+  if (pwCompareResult) {
+    const token = jwtEncodeUserId(userId);
 
     return {
       result: "success",
-      data: {
-        jwt
-      }
+      data: token
     };
   } else {
     return {
@@ -38,13 +49,18 @@ export const signupService = async (req: Request) => {
 
   const { userId, userPw } = req.body;
 
+  if (!userId || !userPw) return { result: "invalidBody" };
+
   //TODO validation
   //TODO MODEL
 
-  let validation = false;
-  if (!validation) return { result };
+  const validation = await userIdValidationModel(userId);
 
-  const signupHandle = await signupModel(userId, userPw);
+  if (!validation) return { result: "exsistUserId" };
+
+  const hashedPassword = await bscryptPassword(userPw);
+
+  const signupHandle = await signupModel(userId, hashedPassword);
 
   if (signupHandle) {
     return {
