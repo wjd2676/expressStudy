@@ -10,14 +10,26 @@ export const userIdValidationModel = async (userId: string) => {
   return result;
 };
 
-export const loginModel = async (userId: string, userPw: string) => {
-  return null;
-};
-
 export const signupModel = async (userId: string, userPw: string) => {
-  return null;
+  const result = await prismaInstance.user.create({
+    data: {
+      userId,
+      userPw
+    }
+  });
+
+  return result;
 };
 
 export const updateUserModel = async (userId: string, userPw: string) => {
-  return null;
+  const result = await prismaInstance.user.update({
+    where: {
+      userId
+    },
+    data: {
+      userPw
+    }
+  });
+
+  return result;
 };

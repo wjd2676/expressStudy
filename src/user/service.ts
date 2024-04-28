@@ -1,10 +1,5 @@
 import { Request } from "express";
-import {
-  loginModel,
-  signupModel,
-  updateUserModel,
-  userIdValidationModel
-} from "./model";
+import { signupModel, updateUserModel, userIdValidationModel } from "./model";
 import {
   bcryptCompare,
   bscryptPassword,
