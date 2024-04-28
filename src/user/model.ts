@@ -2,7 +2,7 @@ import prismaInstance from "../prisma";
 
 export const userIdValidationModel = async (userId: string) => {
   const result = await prismaInstance.user.findUnique({
-    data: {
+    where: {
       userId: userId
     }
   });

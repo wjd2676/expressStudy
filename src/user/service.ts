@@ -51,9 +51,6 @@ export const signupService = async (req: Request) => {
 
   if (!userId || !userPw) return { result: "invalidBody" };
 
-  //TODO validation
-  //TODO MODEL
-
   const validation = await userIdValidationModel(userId);
 
   if (!validation) return { result: "exsistUserId" };
@@ -76,17 +73,25 @@ export const signupService = async (req: Request) => {
 export const updateUserService = async (req: Request) => {
   let result = "invalidValue";
 
-  const { userId, userPw } = req.body;
+  const { userId, userPw, changeUserPw } = req.body;
 
-  //TODO validation
-  //TODO MODEL
+  if (!userId || !userPw) return { result: "invalidBody" };
 
-  let validation = false;
-  if (!validation) return { result };
+  const userIdValidation = await userIdValidationModel(userId);
 
-  const updateuserHandle = await updateUserModel(userId, userPw);
+  if (!userIdValidation) return { result: "invalidUserId" };
 
-  if (updateuserHandle) {
+  const user = await userIdValidationModel(userId);
+
+  const pwCompareResult = await bcryptCompare(user!.userPw, userPw);
+
+  if (!pwCompareResult) return { result: "invalidUserPw" };
+
+  const newHashedPassword = await bscryptPassword(userPw);
+
+  const updateUserHandle = await updateUserModel(userId, newHashedPassword);
+
+  if (updateUserHandle) {
     return {
       result: "success"
     };

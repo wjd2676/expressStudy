@@ -1,9 +1,16 @@
 openapi: "3.0.0"
 info:
-  version: 1.0.0
-  title: Web API docs
-  description: API DOCUMENT
+  version: "1.0.0"
+  title: "Web API docs"
+  description: "API DOCUMENT"
   license:
-    name: MIT
+    name: "MIT"
 servers:
-  - url: http://localhost:3060/
+  - url: "http://localhost:3060/"
+paths:
+  /sample:
+    get:
+      summary: "Sample endpoint"
+      responses:
+        "200":
+          description: "Success"
