@@ -152,33 +152,27 @@ export const getBoardService = async (req: Request) => {
 export const getBoardListService = async (req: Request) => {
   let result = "invalidValue";
 
-  const { boardId } = req.params;
-  const { offset, limit } = req.query;
+  const offset = req.query.offset as string;
+  const limit = req.query.limit as string;
+  const userId = req.query.userId as string;
 
-  //TODO validation
-  //TODO JWT
-  //TODO MODEL
+  const token = req.headers.authorization;
 
-  let validation = false;
-  if (!validation) return { result };
+  if (!offset || !limit || !userId)
+    return { result: "invalidBody", data: null };
 
-  let userId: string = "";
+  if (!token) return { result: "invalidToken", data: null };
 
-  const getBoardListHandle = await getBoardListModel(
-    boardId,
+  const getBoardListData = await getBoardListModel(
     userId,
     Number(offset),
     Number(limit)
   );
 
-  if (getBoardListHandle) {
-    let jwt = "good";
-
+  if (getBoardListData) {
     return {
       result: "success",
-      data: {
-        jwt
-      }
+      data: getBoardListData
     };
   } else {
     return {

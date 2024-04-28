@@ -27,10 +27,24 @@ export const getBoardModel = async (boardId: string, userId: string) => {
 };
 
 export const getBoardListModel = async (
-  boardId: string,
   userId: string,
   offset: number,
   limit: number
 ) => {
-  return null;
+  const result = await prismaInstance.board.findMany({
+    where: {
+      userId
+    },
+    skip: offset * limit,
+    take: limit,
+    select: {
+      boardId: true,
+      boardTitle: true,
+      userId: true,
+      createAt: true,
+      updateAt: true
+    }
+  });
+
+  return result;
 };
