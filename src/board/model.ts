@@ -3,19 +3,51 @@ import prismaInstance from "../prisma";
 export const createBoardModel = async (
   boardTitle: string,
   boardDetail: string,
-  imagePath: string,
+  imagePath: string | null,
   userId: string
 ) => {
-  return null;
+  const result = await prismaInstance.board.create({
+    data: {
+      boardTitle,
+      boardDetail,
+      userId,
+      imagePath
+    }
+  });
+
+  return result;
+};
+
+export const findBoardModel = async (boardId: number) => {
+  const result = await prismaInstance.board.findUnique({
+    where: {
+      boardId
+    }
+  });
+
+  return result;
 };
 
 export const updateBoardModel = async (
-  boardId: string,
+  boardId: number,
   boardTitle: string,
   boardDetail: string,
-  imagePath: string
+  imagePath: string | null,
+  userId: string
 ) => {
-  return null;
+  const result = await prismaInstance.board.update({
+    where: {
+      boardId
+    },
+    data: {
+      boardTitle,
+      boardDetail,
+      imagePath: imagePath !== null ? imagePath : null,
+      userId
+    }
+  });
+
+  return result;
 };
 
 export const deleteBoardModel = async (boardId: string, userId: string) => {

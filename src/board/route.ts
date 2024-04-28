@@ -15,4 +15,4 @@ router.get("/list", getBoardListController);
 router.put("/", updateBoardController);
 router.delete("/:boardId", deleteBoardController);
 
-export default router
+export default router;

@@ -4,29 +4,34 @@ import {
   updateBoardModel,
   deleteBoardModel,
   getBoardModel,
-  getBoardListModel
+  getBoardListModel,
+  findBoardModel
 } from "./model";
+import path from "path";
+import fs from "fs";
+import { imageSaveHandle } from "../../uilts";
 
 export const createBoardService = async (req: Request) => {
   let result = "invalidValue";
 
-  const { boardTitle, boardDetail, imageSrc } = req.body;
+  const { boardTitle, boardDetail, imageSrc, userId } = req.body;
 
-  //TODO validation
-  //TODO JWT
-  //TODO IMAGE HANDLE
-  //TODO MODEL
+  const { src, title } = imageSrc;
 
-  let validation = false;
-  if (!validation) return { result };
+  if (!boardTitle || !boardDetail || !boardDetail || !userId)
+    return { result: "invalidBody" };
 
-  let imagePath: string = "";
-  let userId: string = "";
+  let filePath: string | null = null;
+
+  if (!src || !title) {
+  } else {
+    filePath = await imageSaveHandle(src, title);
+  }
 
   const createBoardHandle = await createBoardModel(
     boardTitle,
     boardDetail,
-    imagePath,
+    filePath,
     userId
   );
 
@@ -49,34 +54,40 @@ export const createBoardService = async (req: Request) => {
 export const updateBoardService = async (req: Request) => {
   let result = "invalidValue";
 
-  const { boardId, boardTitle, boardDetail, imageSrc } = req.body;
+  const { boardId, boardTitle, boardDetail, imageSrc, userId } = req.body;
 
-  //TODO validation
-  //TODO JWT
-  //TODO IMAGEHANDLE
-  //TODO MODEL
+  const { src, title } = imageSrc;
 
-  let validation = false;
-  if (!validation) return { result };
+  if (!boardId || !boardTitle || !boardDetail || !boardDetail || !userId)
+    return { result: "invalidBody" };
 
-  let imagePath: string = "";
-  let userId: string = "";
+  const asBoardData = await findBoardModel(boardId);
 
-  const loginHandle = await updateBoardModel(
-    boardId,
+  if (!asBoardData) return { result: "invalidBoardId" };
+
+  let filePath: string | null;
+
+  if (!src || !title) {
+    filePath = null;
+
+    if (asBoardData.imagePath !== null) {
+      await fs.promises.unlink(asBoardData.imagePath);
+    }
+  } else {
+    filePath = await imageSaveHandle(src, title);
+  }
+
+  const updateBoardHandle = await updateBoardModel(
+    Number(boardId),
     boardTitle,
     boardDetail,
-    imagePath
+    filePath,
+    userId
   );
 
-  if (loginHandle) {
-    let jwt = "good";
-
+  if (updateBoardHandle) {
     return {
-      result: "success",
-      data: {
-        jwt
-      }
+      result: "success"
     };
   } else {
     return {
