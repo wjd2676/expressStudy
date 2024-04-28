@@ -3,11 +3,9 @@ import {
   createBoardModel,
   updateBoardModel,
   deleteBoardModel,
-  getBoardModel,
   getBoardListModel,
   findBoardModel
 } from "./model";
-import path from "path";
 import fs from "fs";
 import { imageSaveHandle } from "../../uilts";
 
@@ -101,25 +99,19 @@ export const deleteBoardService = async (req: Request) => {
 
   const { boardId } = req.params;
 
-  //TODO validation
-  //TODO JWT
-  //TODO MODEL
+  if (!boardId) return { result: "invalidBoardId" };
 
-  let validation = false;
-  if (!validation) return { result };
+  const findBoardData = await findBoardModel(Number(boardId));
+
+  if (!findBoardData) return { result: "invalidBoardId" };
 
   let userId: string = "";
 
-  const loginHandle = await deleteBoardModel(boardId, userId);
+  const deleteBoardHandle = await deleteBoardModel(boardId, userId);
 
-  if (loginHandle) {
-    let jwt = "good";
-
+  if (deleteBoardHandle) {
     return {
-      result: "success",
-      data: {
-        jwt
-      }
+      result: "success"
     };
   } else {
     return {
@@ -133,25 +125,16 @@ export const getBoardService = async (req: Request) => {
 
   const { boardId } = req.params;
 
-  //TODO validation
-  //TODO JWT
-  //TODO MODEL
+  if (!boardId) return { result: "invalidBoardId" };
 
-  let validation = false;
-  if (!validation) return { result };
+  const findBoardData = await findBoardModel(Number(boardId));
 
-  let userId: string = "";
+  if (!findBoardData) return { result: "invalidBoardId" };
 
-  const getBoardHandle = await getBoardModel(boardId, userId);
-
-  if (getBoardHandle) {
-    let jwt = "good";
-
+  if (findBoardData) {
     return {
       result: "success",
-      data: {
-        jwt
-      }
+      data: findBoardData
     };
   } else {
     return {
