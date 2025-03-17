@@ -8,6 +8,7 @@ export const bcryptHashing = async (password: string): Promise<string> => {
   console.log('header-1')
   console.log('header-2')
 
+  console.log('nav');
   const saltRounds = 10; // 암호화 강도 설정
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
