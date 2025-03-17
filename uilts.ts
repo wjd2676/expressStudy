@@ -4,8 +4,7 @@ import path from "path";
 import fs from "fs";
 
 export const bcryptHashing = async (password: string): Promise<string> => {
-  console.log(1);
-
+  console.log('nav');
   const saltRounds = 10; // 암호화 강도 설정
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
