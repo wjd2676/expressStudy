@@ -28,6 +28,7 @@ const secretKey: string = process.env.SECRET_KEY!;
 
 export const bscryptPassword = async (userPw: string) => {
   console.log('header')
+  console.log('nav-1')
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(userPw, saltRounds);
 
